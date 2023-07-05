@@ -47,67 +47,29 @@ document.querySelector("form").addEventListener("submit", function (e) {
 
   uploadButton.textContent = "Uploading";
 
-  var reader = new FileReader();
+  var storageRef = firebase.storage().ref();
+  var pdfFileRef = storageRef.child(file.name);
 
-  reader.onload = function (event) {
-    var arrayBuffer = event.target.result;
-    var uint8Array = new Uint8Array(arrayBuffer);
-
-    pdfjsLib.getDocument(uint8Array)
-      .promise.then(function (pdfDoc) {
-        var numPages = pdfDoc.numPages;
-        var textContent = "";
-
-        function processPage(pageNum) {
-          return pdfDoc.getPage(pageNum).then(function (page) {
-            return page.getTextContent().then(function (content) {
-              content.items.forEach(function (item) {
-                textContent += item.str + " ";
-              });
-            });
-          });
-        }
-
-        var promises = [];
-        for (var i = 1; i <= numPages; i++) {
-          promises.push(processPage(i));
-        }
-
-        Promise.all(promises)
-          .then(function () {
-            // All pages processed, upload the text file to Firebase
-            var storageRef = firebase.storage().ref();
-            var textFileRef = storageRef.child(file.name + ".txt");
-
-            textFileRef.putString(textContent)
-              .then(function (snapshot) {
-                uploadButton.textContent = "Uploaded";
-                alertfunction("Upload Successful!");
-              })
-              .catch(function (error) {
-                uploadButton.textContent = "Upload";
-                alertfunction("Upload Unsuccessful");
-                // Handle error during upload
-              });
-          })
-          .catch(function (error) {
-            uploadButton.textContent = "Upload";
-            alertfunction("Error occurred while processing the PDF file");
-            console.log(error);
-          });
-      })
-      .catch(function (error) {
-        uploadButton.textContent = "Upload";
-        alertfunction("Error occurred while loading the PDF file");
-        console.log(error);
-      });
-  };
-
-  reader.onerror = function (event) {
-    uploadButton.textContent = "Upload";
-    alertfunction("Error occurred while reading the file");
-    console.log(event.target.error);
-  };
-
-  reader.readAsArrayBuffer(file);
+  pdfFileRef.put(file)
+    .then(function (snapshot) {
+      uploadButton.textContent = "Uploaded";
+      alertfunction("Upload Successful!");
+      // Get the download URL for the PDF file
+      pdfFileRef.getDownloadURL()
+        .then(function (url) {
+          // Display the download link
+          var downloadLink = document.getElementById("downloadLink");
+          downloadLink.href = url;
+          downloadLink.textContent = "Download Original PDF";
+          downloadLink.style.display = "block";
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+    })
+    .catch(function (error) {
+      uploadButton.textContent = "Upload";
+      alertfunction("Upload Unsuccessful");
+      console.log(error);
+    });
 });
