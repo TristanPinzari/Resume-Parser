@@ -1,0 +1,7 @@
+Name: Tristan
+
+Age: 15
+
+Country: Canada
+
+Profession: Computer Programmer
