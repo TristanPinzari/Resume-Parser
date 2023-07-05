@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume Parser</title>
+  <link rel="stylesheet" href="applicant.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-storage.js"></script>
+</head>
+<body>
+  <header id="welcome">
+    <h1>Welcome to Resume Parser!</h1>
+  </header>
+  <div class="wrapper">
+    <header>Upload Your Resume</header>
+    <form action="#">
+      <label id="chooselabel" for="file-input">
+        Choose File 
+      </label>
+      <input type="file" id="file-input" hidden>
+      <i class="fas fa-cloud-upload-alt"></i>
+      <button id= "uploadButton" type="submit">No File Selected</button>
+    </form>
+    <a href="recruiter.html">
+      <p id="recruiter">Recruiter View</p>
+    </a>
+  </div>
+  <script src="applicant.js"></script>
+</body>
+</html>
