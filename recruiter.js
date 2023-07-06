@@ -20,7 +20,8 @@ searchbar.addEventListener('change', function() {
   }
 
   if (searchbar.value === "") {
-    fileForm.removeChild(fileForm.firstChild);
+    fileForm.textContent = "No files found"
+    return;
   }
 
   firebase
@@ -44,6 +45,7 @@ searchbar.addEventListener('change', function() {
               if (fileContent.toLowerCase().includes(searchbar.value)) {
                 const pdfFileName = fileRef.name.replace('.txt', '');
                 const pdfFileRef = firebase.storage().ref().child(pdfFileName);
+                fileForm.textContent = fileForm.textContent.replace("No files found with this keyword", " ")
 
                 pdfFileRef.getDownloadURL()
                   .then(function(pdfUrl) {
@@ -71,4 +73,9 @@ searchbar.addEventListener('change', function() {
   .catch(function(error) {
     console.log('Error retrieving files from Firebase Storage:', error);
   });
+
+  while (fileForm.textContent === "") {
+    fileForm.textContent = "No files found with this keyword"
+  }
+
 });

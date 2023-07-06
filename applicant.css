@@ -21,6 +21,13 @@ a{
   margin-bottom:60px;
   color:#fff;
 }
+#PDFOnly{
+  text-align: center;
+  color: #6990F2;
+  cursor: pointer;
+  border: none;
+  background-color: #ffffff00;
+}
 #chooselabel{
   cursor: pointer;
   background-color: #ffffff;
