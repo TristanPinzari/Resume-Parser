@@ -44,7 +44,9 @@ a {
   color: #6990F2;
   outline: none;
 }
-
+#search-bar::placeholder {
+  font-style: italic;
+}
 .wrapper {
   width: 430px;
   background: #fff;
