@@ -9,11 +9,17 @@ var firebaseConfig = {
 // Get references to the necessary elements
 const searchbar = document.getElementById('searchbar');
 const fileForm = document.getElementById('keywordfiles');
+let filecount;
+let realcount;
 
 firebase.initializeApp(firebaseConfig);
 
 // Event listener for the display button
 searchbar.addEventListener('change', function() {
+
+  filecount = 0;
+  realcount = 0;
+
   while (fileForm.firstChild) {
     fileForm.removeChild(fileForm.firstChild);
   }
@@ -31,6 +37,7 @@ searchbar.addEventListener('change', function() {
     .listAll()
     .then(function(result) {
       result.items.forEach(function(fileRef) {
+        realcount+=1;
         fileRef
           .getDownloadURL()
           .then(function(url) {
@@ -57,6 +64,11 @@ searchbar.addEventListener('change', function() {
                       fileLink.target = '_blank';
                       fileForm.appendChild(fileLink);
                     })
+                } else {
+                  filecount+=1;
+                  if (realcount == filecount){
+                    fileForm.textContent = "No files found with keywords";
+                  }
                 }
               })
               .catch(function(error) {
