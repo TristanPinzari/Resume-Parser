@@ -16,6 +16,17 @@ body{
 a{
   color:#6990F2;
 }
+@keyframes SlideDown {
+  from{
+    transform: translateY(-100px)
+  }
+  to{
+    transform: translateY(0)
+  }
+}
+.SlideDown{
+  animation: SlideDown 0.5s ease-in-out;
+}
 #welcome{
   margin-top:120px;
   margin-bottom:60px;
@@ -34,6 +45,12 @@ a{
   padding: 5px 25px;
   border: 1px solid #6990F2;
   border-radius: 10px;
+  transition: transform, 5s, ease-in-out, 0.3s;
+}
+#chooselabel:hover{
+  transform: translateY(-2px);
+  background-color: #6990F2;
+  color: #fff;
 }
 #file-input{
     cursor: pointer;
@@ -50,6 +67,12 @@ a{
   padding: 5px 25px;
   border-radius: 10px;
   background-color: #ffffff;
+  transition: transform, 5s, ease-in-out, 0.3s;
+}
+#uploadButton:hover{
+  transform: translateY(-2px);
+  background-color: #6990F2;
+  color: #fff;
 }
 #recruiter{
   text-align: center;
@@ -57,6 +80,10 @@ a{
   cursor: pointer;
   border: none;
   background-color: #ffffff00;
+  transition: transform, 5s, ease-in-out, 0.3s;
+}
+#recruiter:hover{
+  transform: translateY(-2px);
 }
 .fas{
   margin-top:15px;

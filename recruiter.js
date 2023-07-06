@@ -45,7 +45,7 @@ searchbar.addEventListener('change', function() {
               if (fileContent.toLowerCase().includes(searchbar.value)) {
                 const pdfFileName = fileRef.name.replace('.txt', '');
                 const pdfFileRef = firebase.storage().ref().child(pdfFileName);
-                fileForm.textContent = fileForm.textContent.replace("No files found with this keyword", " ")
+                fileForm.textContent = fileForm.textContent.replace("No files found with this keyword", "")
 
                 pdfFileRef.getDownloadURL()
                   .then(function(pdfUrl) {
