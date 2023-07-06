@@ -42,14 +42,19 @@ searchbar.addEventListener('change', function() {
             })
             .then(function(fileContent) {
               if (fileContent.toLowerCase().includes(searchbar.value)) {
-                // Create a link element for the file
-                const fileLink = document.createElement('a');
-                fileLink.href = url;
-                fileLink.textContent = fileRef.name;
-                fileLink.target = '_blank';
+                const pdfFileName = fileRef.name.replace('.txt', '');
+                const pdfFileRef = firebase.storage().ref().child(pdfFileName);
 
-                // Append the link to the wrapper form
-                fileForm.appendChild(fileLink);
+                pdfFileRef.getDownloadURL()
+                  .then(function(pdfUrl) {
+                    // Create a link element for the PDF file
+                    const fileLink = document.createElement('a');
+                    fileLink.href = pdfUrl;
+                    fileLink.textContent = pdfFileName;
+                    fileLink.target = '_blank';
+                    // Append the link to the wrapper form
+                    fileForm.appendChild(fileLink);
+                  })
               }
             })
             
