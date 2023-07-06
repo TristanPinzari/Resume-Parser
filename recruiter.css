@@ -5,7 +5,17 @@
   box-sizing: border-box;
   font-family: "Poppins", sans-serif;
 }
-
+@keyframes SlideUp {
+  from{
+    transform: translateY(100px)
+  }
+  to{
+    transform: translateY(0)
+  }
+}
+.SlideUp{
+  animation: SlideUp 0.5s ease-in-out;
+}
 body {
   display: flex;
   flex-direction: column;
@@ -31,6 +41,10 @@ a {
   cursor: pointer;
   border: none;
   background-color: #ffffff00;
+  transition: transform, 5s, ease-in-out, 0.3s;
+}
+#recruiter:hover{
+  transform: translateY(-2px);
 }
 
 #searchbar {

@@ -14,68 +14,61 @@ firebase.initializeApp(firebaseConfig);
 
 // Event listener for the display button
 searchbar.addEventListener('change', function() {
-
   while (fileForm.firstChild) {
-      fileForm.removeChild(fileForm.firstChild);
+    fileForm.removeChild(fileForm.firstChild);
   }
 
   if (searchbar.value === "") {
-    fileForm.textContent = "No files found"
+    fileForm.textContent = "No valid keywords";
     return;
   }
 
+  const keywords = searchbar.value.toLowerCase().split(" ");
+
   firebase
-  .storage()
-  .ref()
-  .listAll()
-  .then(function(result) {
-    result.items.forEach(function(fileRef) {
-      // Get the download URL for the file
-      fileRef
-        .getDownloadURL()
-        .then(function(url) {
-          // Fetch the file content from the URL
-          fetch(url, {
-            method: "GET"
-        })
-            .then(function(response) {
-              return response.text();
+    .storage()
+    .ref()
+    .listAll()
+    .then(function(result) {
+      result.items.forEach(function(fileRef) {
+        fileRef
+          .getDownloadURL()
+          .then(function(url) {
+            fetch(url, {
+              method: "GET"
             })
-            .then(function(fileContent) {
-              if (fileContent.toLowerCase().includes(searchbar.value)) {
-                const pdfFileName = fileRef.name.replace('.txt', '');
-                const pdfFileRef = firebase.storage().ref().child(pdfFileName);
-                fileForm.textContent = fileForm.textContent.replace("No files found with this keyword", "")
+              .then(function(response) {
+                return response.text();
+              })
+              .then(function(fileContent) {
+                const foundKeywords = keywords.filter(keyword =>
+                  fileContent.toLowerCase().includes(keyword)
+                );
 
-                pdfFileRef.getDownloadURL()
-                  .then(function(pdfUrl) {
-                    // Create a link element for the PDF file
-                    const fileLink = document.createElement('a');
-                    fileLink.href = pdfUrl;
-                    fileLink.textContent = pdfFileName;
-                    fileLink.target = '_blank';
-                    // Append the link to the wrapper form
-                    fileForm.appendChild(fileLink);
-                  })
-              }
-            })
-            
-            .catch(function(error) {
-              console.log('Error fetching file:', error);
-            });
-        })
+                if (foundKeywords.length === keywords.length) {
+                  const pdfFileName = fileRef.name.replace('.txt', '');
+                  const pdfFileRef = firebase.storage().ref().child(pdfFileName);
 
-        .catch(function(error) {
-          console.log('Error getting download URL:', error);
-        });
+                  pdfFileRef.getDownloadURL()
+                    .then(function(pdfUrl) {
+                      const fileLink = document.createElement('a');
+                      fileLink.href = pdfUrl;
+                      fileLink.textContent = pdfFileName;
+                      fileLink.target = '_blank';
+                      fileForm.appendChild(fileLink);
+                    })
+                }
+              })
+              .catch(function(error) {
+                console.log('Error fetching file:', error);
+              });
+          })
+          .catch(function(error) {
+            console.log('Error getting download URL:', error);
+          });
+      });
+    })
+    .catch(function(error) {
+      console.log('Error retrieving files from Firebase Storage:', error);
     });
-  })
-  .catch(function(error) {
-    console.log('Error retrieving files from Firebase Storage:', error);
-  });
-
-  while (fileForm.textContent === "") {
-    fileForm.textContent = "No files found with this keyword"
-  }
-
 });
