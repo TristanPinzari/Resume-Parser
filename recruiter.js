@@ -16,7 +16,6 @@ firebase.initializeApp(firebaseConfig);
 
 // Event listener for the display button
 searchbar.addEventListener('change', function() {
-
   filecount = 0;
   realcount = 0;
 
@@ -37,47 +36,49 @@ searchbar.addEventListener('change', function() {
     .listAll()
     .then(function(result) {
       result.items.forEach(function(fileRef) {
-        realcount+=1;
-        fileRef
-          .getDownloadURL()
-          .then(function(url) {
-            fetch(url, {
-              method: "GET"
-            })
-              .then(function(response) {
-                return response.text();
+        if (fileRef.name.endsWith(".txt")) { // Check if the file has a .txt extension
+          realcount += 1;
+          fileRef
+            .getDownloadURL()
+            .then(function(url) {
+              fetch(url, {
+                method: "GET"
               })
-              .then(function(fileContent) {
-                const foundKeywords = keywords.filter(keyword =>
-                  fileContent.toLowerCase().includes(keyword)
-                );
+                .then(function(response) {
+                  return response.text();
+                })
+                .then(function(fileContent) {
+                  const foundKeywords = keywords.filter(keyword =>
+                    fileContent.toLowerCase().includes(keyword)
+                  );
 
-                if (foundKeywords.length === keywords.length) {
-                  const pdfFileName = fileRef.name.replace('.txt', '');
-                  const pdfFileRef = firebase.storage().ref().child(pdfFileName);
+                  if (foundKeywords.length === keywords.length) {
+                    const pdfFileName = fileRef.name.replace('.txt', '');
+                    const pdfFileRef = firebase.storage().ref().child(pdfFileName);
 
-                  pdfFileRef.getDownloadURL()
-                    .then(function(pdfUrl) {
-                      const fileLink = document.createElement('a');
-                      fileLink.href = pdfUrl;
-                      fileLink.textContent = pdfFileName;
-                      fileLink.target = '_blank';
-                      fileForm.appendChild(fileLink);
-                    })
-                } else {
-                  filecount+=1;
-                  if (realcount == filecount){
-                    fileForm.textContent = "No files found with keywords";
+                    pdfFileRef.getDownloadURL()
+                      .then(function(pdfUrl) {
+                        const fileLink = document.createElement('a');
+                        fileLink.href = pdfUrl;
+                        fileLink.textContent = pdfFileName;
+                        fileLink.target = '_blank';
+                        fileForm.appendChild(fileLink);
+                      });
+                  } else if (fileRef.name.endsWith(".txt")) {
+                    filecount += 1;
+                    if (realcount == filecount) {
+                      fileForm.textContent = "No files found with keywords";
+                    }
                   }
-                }
-              })
-              .catch(function(error) {
-                console.log('Error fetching file:', error);
-              });
-          })
-          .catch(function(error) {
-            console.log('Error getting download URL:', error);
-          });
+                })
+                .catch(function(error) {
+                  console.log('Error fetching file:', error);
+                });
+            })
+            .catch(function(error) {
+              console.log('Error getting download URL:', error);
+            });
+        }
       });
     })
     .catch(function(error) {
