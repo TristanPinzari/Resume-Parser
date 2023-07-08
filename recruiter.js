@@ -24,8 +24,33 @@ searchbar.addEventListener('change', function() {
   }
 
   if (searchbar.value === "") {
-    fileForm.textContent = "No valid keywords";
-    return;
+    firebase
+      .storage()
+      .ref()
+      .listAll()
+      .then(function(result) {
+        result.items.forEach(function(fileRef) {
+          if (fileRef.name.endsWith(".pdf")) {
+            fileRef
+              .getDownloadURL
+              .then(function(url) {
+                fetch(url, {
+                  method: "GET"
+                })
+                  .then(function() {
+                    fileRef.getDownloadURL()
+                      .then (function(pdfUrl) {
+                        const fileLink = document.createElement('a');
+                        fileLink.href = pdfUrl;
+                        fileLink.textContent = pdfFileName;
+                        fileLink.target = '_blank';
+                        fileForm.appendChild(fileLink);
+                      })
+                  })
+              }) 
+          }
+        })
+      })
   }
 
   const keywords = searchbar.value.toLowerCase().split(" ");
