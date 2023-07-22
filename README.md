@@ -15,7 +15,7 @@ Resume Parser allows applicants to upload their resume to the company's cloud st
 
 **Frontend**
 
-- React
+- HTML
 - CSS
 
 **Backend**
